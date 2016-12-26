@@ -1,0 +1,20 @@
+.chatList {
+  position: relative;
+  width: 200px;
+  background: rgba(97, 132, 71, .4);
+  height: 100%;
+  box-sizing: border-box;
+  padding: 5px 5px 50px;
+  overflow: auto;
+}
+
+.addChat {
+  text-align: center;
+  position: absolute;
+  width: 190px;
+  bottom: 10px;
+}
+
+.dialog {
+  background: rgba(255, 255, 255, .3);
+}

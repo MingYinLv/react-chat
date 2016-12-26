@@ -1,0 +1,29 @@
+.chatItem {
+  position: relative;
+  height: 35px;
+  padding: 5px 5px 5px 45px;
+  line-height: 35px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
+  user-select: none;
+  .photo {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+  }
+}
+
+.chatItem + .chatItem {
+  margin-top: 5px;
+}
+
+.chatItem.active, .chatItem.active:hover {
+  background: rgba(255, 255, 255, .4);
+}
+
+.chatItem:hover {
+  background: rgba(255, 255, 255, .2);
+}

@@ -1,0 +1,48 @@
+{
+  "parser" : "babel-eslint",
+  "extends": "airbnb",
+  "env"    : {
+    "browser": true,
+    "es6"    : true,
+    "node"   : true
+  },
+  "globals": {
+    "__DEV__"     : false,
+    "__PROD__"    : false,
+    "__DEBUG__"   : false,
+    "__COVERAGE__": false,
+    "__BASENAME__": false,
+    "document"    : true,
+    "navigator"   : true,
+    "window"      : true,
+    "google"      : true
+  },
+  "rules"  : {
+    // 换行符风格 unix/windows
+    "linebreak-style": 0,
+    // 一元符 ++ 和 -- 编译时会自动插入分号，空白的差异会改变的源代码的语义
+    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
+    // 如果一个类方法不使用 this，它可以安全地进行静态函数
+    "class-methods-use-this": 0,
+    // 这条规则可以强制或禁止各地箭头函数体中使用大括号
+    "arrow-body-style": 0,
+    // 强制要求 require 在顶层模块范围
+    "global-require": 0,
+    // 驼峰命名
+    "camelcase": 0,
+    // 此规则旨在消除这对程序的状态没有影响未使用的表达式
+    "no-unused-expressions": 0,
+    // 最大长度字符
+    "max-len": [2, 120],
+    // 修改参数变量可能会产生误导，导致混乱的行为
+    "no-param-reassign": [2, { "props": false }],
+    // 允许方法提前调用
+    "no-use-before-define": [2, { "functions": false }],
+    // 允许可配置扩展名
+    "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx"] }],
+    // 不允许在没有交互的节点上添加事件
+    "jsx-a11y/no-static-element-interactions": 0,
+    // 不允许target属性
+    "react/jsx-no-target-blank": 0
+  }
+}

@@ -1,0 +1,42 @@
+$font-family-base:           Microsoft YaHei, -apple-system, "黑体" !default;
+$font-size-root:             14px !default;
+
+$font-size-base:             1rem !default;
+$font-size-lg:               1.25rem !default;
+$font-size-sm:               .875rem !default;
+$font-size-xs:               .75rem !default;
+
+$line-height-base:           1.5 !default;
+$line-height-lg:             (4 / 3) !default;
+$line-height-sm:             1.5 !default;
+
+// 颜色
+$color-dark:                 #373a3c !default;
+$color-dark-light:           #55595c !default;
+$color-dark-lighter:         #818a91 !default;
+$color-dark-lightest:        #999999 !default;
+
+$color-gray:                 #cccccc !default;
+$color-gray-light:           #eceeef !default;
+$color-gray-lighter:         #f4f4f4 !default;
+$color-gray-lightest:        #f7f7f9 !default;
+
+$color-primary:              #32cdbf !default;
+$color-primary-light:        lighten($color-primary, 10) !default;
+$color-primary-lighter:      lighten($color-primary, 20) !default;
+$color-primary-lightest:     lighten($color-primary, 40) !default;
+
+$color-primary-dark:         darken($color-primary, 10) !default;
+$color-primary-darken:       darken($color-primary, 20) !default;
+
+$color-red:                  #ff6c6c !default;
+
+
+// mixin
+@mixin clearfix() {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}

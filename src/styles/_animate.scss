@@ -1,0 +1,85 @@
+@import "_variables";
+
+// 定义动画属性
+@mixin effect($time-out) {
+  animation-duration: $time-out;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(.25, .8, .25, 1);
+}
+
+// 动画类名前缀 | 动画名前缀（In | Out） | 动画时间（默认 200ms）
+@mixin animation($name-prefix, $animation-prefix, $transform-origin, $time-out-in: 200ms, $time-out-out: 200ms) {
+
+  .#{$name-prefix}-enter,
+  .#{$name-prefix}-appear {
+    opacity: 0;
+    @include effect($time-out-in);
+    transform-origin: $transform-origin;
+    animation-play-state: paused;
+  }
+
+  .#{$name-prefix}-leave {
+    @include effect($time-out-out);
+    transform-origin: $transform-origin;
+    animation-play-state: paused;
+  }
+
+  .#{$name-prefix}-enter.#{$name-prefix}-enter-active,
+  .#{$name-prefix}-appear.#{$name-prefix}-appear-active {
+    animation-name: #{$animation-prefix}In;
+    animation-play-state: running;
+  }
+
+  .#{$name-prefix}-leave.#{$name-prefix}-leave-active {
+    animation-name: #{$animation-prefix}Out;
+    animation-play-state: running;
+  }
+
+}
+
+// fade-page 路由动画
+.fade-page-appear,
+.fade-page-enter {
+  opacity: 0;
+
+  &.fade-page-appear-active,
+  &.fade-page-enter-active {
+    opacity: 1;
+    transition: opacity 1s cubic-bezier(.25, .8, .25, 1);
+  }
+}
+
+.fade-page-leave {
+  opacity: 1;
+
+  &.fade-page-leave-active {
+    opacity: 0;
+    transition: opacity 100ms cubic-bezier(.25, .8, .25, 1);
+  }
+}
+
+// 单个条目 zoom 动画
+$item-zoom-origin: 50% 0;
+@include animation(item-zoom, itemZoom, $item-zoom-origin, 300ms, 200ms);
+
+@keyframes:global(itemZoomIn) {
+  0% {
+    opacity: 0;
+    transform: scale(1, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes:global(itemZoomOut) {
+  0% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1, 0);
+  }
+}
