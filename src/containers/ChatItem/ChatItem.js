@@ -2,10 +2,11 @@
  * Created by MingYin Lv on 2016/10/23.
  */
 
-import React, {Component, PropTypes} from 'react';
-import {shouldComponentUpdate} from 'react-immutable-render-mixin';
+import React, { Component, PropTypes } from 'react';
+import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import className from 'classnames';
 import classes from './ChatItem.scss';
+import { obj } from '../../util/socket';
 
 const propTypes = {
   data: PropTypes.object.isRequired,
@@ -30,12 +31,18 @@ class ChatItem extends Component {
   }
 
   switchChat = () => {
-    const {switchChat, data} = this.props;
+    const { switchChat, data } = this.props;
     switchChat(data.get('name'));
+    const { socket } = obj;
+    if (socket) {
+      socket.emit('user join', {
+        chatName: data.get('name'),
+      });
+    }
   };
 
   render() {
-    const {data, active} = this.props;
+    const { data, active } = this.props;
 
     const chatCls = className(classes.chatItem, {
       [classes.active]: active,
@@ -45,6 +52,7 @@ class ChatItem extends Component {
       <div className={chatCls} onClick={this.switchChat}>
         <img src={data.get('icon')} alt={data.get('name')} className={classes.photo}/>
         {data.get('name')}
+        {/*<div className={classes.badge}>{data.get('userNum')}</div>*/}
       </div>
     )
   }

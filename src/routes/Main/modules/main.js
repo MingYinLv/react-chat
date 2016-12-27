@@ -10,6 +10,8 @@ export const SWITCH_CHAT = 'SWITCH_CHAT';  // 切换聊天室
 export const CHANGE_WINDOW = 'CHANGE_WINDOW';   // 修改窗口模式
 export const USER_JOIN = 'USER_JOIN';   // 用户加入聊天室
 export const USER_LEFT = 'USER_LEFT';   // 用户离开聊天室
+export const LOGIN_LOADING = 'LOGIN_LOADING';  // 登录动画
+export const LOGIN_IN = 'LOGIN_IN';   // 登录
 
 export function changeWindow(window = 'normal') {
   return {
@@ -18,10 +20,15 @@ export function changeWindow(window = 'normal') {
   }
 }
 
+export function showLoginLoading() {
+  return {
+    type: LOGIN_LOADING,
+  }
+}
+
 export function initial({ chatMap }) {
   const chatList = Object.keys(chatMap).map((n) => {
     const chat = chatMap[n];
-    console.log(chat);
     return {
       name: n,
       ...chat,
@@ -40,7 +47,7 @@ export function loadChatList(data) {
   };
 }
 
-export function loadMessageList() {
+export function loadMessageList(data) {
   return {
     type: LOAD_MESSAGE_LIST,
     data
@@ -80,6 +87,13 @@ const ACTION_HANDLERS = {
     console.log(`${data.user.username}-${data.user.id}离开了${data.chatName}`);
     return state;
   },
+  [LOGIN_LOADING]: (state) => {
+    return state.set('loginLoading', true);
+  },
+  [LOGIN_IN]: (state, action) => {
+    const { data } = action;
+    return state.set('username', data.username).set('loginLoading', false);
+  },
 };
 
 const initialState = Immutable.fromJS({
@@ -102,6 +116,8 @@ const initialState = Immutable.fromJS({
   chatName: '',  // 当前聊天室名称
   messageList: [],  // 消息列表
   window: 'normal',
+  username: localStorage.getItem('username'),
+  loginLoading: false,
 });
 
 export default function mainReducer(state = initialState, action) {

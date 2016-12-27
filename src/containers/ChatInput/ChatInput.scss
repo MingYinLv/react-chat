@@ -3,8 +3,30 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 110px;
-  padding: 10px 10px 30px;
+  height: 150px;
+  padding: 10px 10px 50px;
   background: rgba(255, 255, 255, .6);
   box-shadow: 0 3px -6px rgba(0, 0, 0, .2);
+}
+
+.buttons {
+  position: absolute;
+  right: 15px;
+  bottom: 10px;
+  button + button {
+    margin-left: 15px;
+  }
+}
+
+.input {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  top: 0;
+  padding: 10px;
+  resize: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  background: rgba(255, 255, 255, .3);
 }

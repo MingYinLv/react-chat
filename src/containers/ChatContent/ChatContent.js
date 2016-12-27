@@ -20,6 +20,9 @@ class ChatContent extends Component {
   render() {
     return (
       <div className={classes.container}>
+        <div className={classes.content}>
+          内容
+        </div>
         <ChatInput />
       </div>
     )

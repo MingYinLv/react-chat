@@ -111,6 +111,13 @@
     }
   }
 
+  .message {
+    line-height: 30px;
+    font-size: 13px;
+    color: #ff4650;
+    transition: all 300ms;
+  }
+
   .buttons {
     margin-top: 20px;
     text-align: right;

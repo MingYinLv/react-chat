@@ -64,6 +64,14 @@ const chatMap = {
     icon: '/images/chat/1.png',
   }
 };
+const messageMap = {
+  '第一个聊天室': [{
+    username: '吕铭印',
+    id: '123',
+    message: '第一条信息',
+    type: 'message',
+  }],
+};
 var server = require('http').createServer(app.callback());
 var io = require('socket.io')(server);
 io.on('connection', function (socket) {
@@ -106,7 +114,11 @@ io.on('connection', function (socket) {
     // 当前socket加入到聊天室中
     socket.join(chatName);
     // 加入成功
-    socket.emit('join success', chat);
+    socket.emit('join success', {
+      chat,
+      user,
+      messages: messageMap[chatName],
+    });
   });
 
   socket.on('create chat', function (data) {
@@ -116,6 +128,16 @@ io.on('connection', function (socket) {
   socket.on('new message', function (data) {
 
   });
+
+  socket.on('loadChatInfo', function ({ chatName }) {
+    if (chatName) {
+      socket.emit('loadChatInfo', {
+        messages: messageMap[chatName],
+        chat: chatMap[chatName],
+      });
+    }
+  });
+
   socket.on('disconnect', function () {
     // 如果之前有加入聊天室,先离开
     const user = userMap[socket.id];

@@ -1,3 +1,5 @@
+@import "../../styles/variables";
+
 .chatItem {
   position: relative;
   height: 45px;
@@ -14,6 +16,20 @@
     left: 5px;
     top: 5px;
   }
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  left: 45px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  background: $color-primary;
+  line-height: 20px;
+  text-align: center;
+  color: #fff;
+  transform: translateX(-50%);
 }
 
 .chatItem + .chatItem {

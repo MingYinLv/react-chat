@@ -9,7 +9,9 @@ import classNames from 'classnames';
 import { obj } from '../../util/socket';
 import classes from '../ChatList/ChatList.scss';
 import Button from '../../components/Button';
-const propTypes = {};
+const propTypes = {
+  showLoginLoading: PropTypes.func.isRequired,
+};
 
 class LoginModal extends Component {
   constructor(props) {
@@ -23,7 +25,15 @@ class LoginModal extends Component {
 
   onSubmit = () => {
     const { socket }=obj;
+    const { name } = this.state;
+    if (!name) {
+      this.setState({
+        message: '请输入您的用户名',
+      });
+      return;
+    }
     if (socket) {
+      this.props.showLoginLoading();
       socket.emit('login', {
         username: this.state.name,
       });
@@ -31,8 +41,14 @@ class LoginModal extends Component {
   };
 
   onChange = (e) => {
+    const { value } = e.target;
+    let message = '';
+    if (!value) {
+      message = '请输入您的用户名';
+    }
     this.setState({
-      name: e.target.value,
+      name: value,
+      message,
     });
   };
 
@@ -40,12 +56,6 @@ class LoginModal extends Component {
     if (e.key === 'Enter') {
       this.hide();
     }
-  };
-
-  onFocus = () => {
-    this.setState({
-      message: '',
-    });
   };
 
   show = () => {
@@ -85,13 +95,15 @@ class LoginModal extends Component {
                 type="text"
                 name="name"
                 autoComplete="off"
-                onFocus={this.onFocus}
                 onKeyPress={this.onKeyPress}
                 value={this.state.name}
                 onChange={this.onChange}
                 placeholder="请输入您的用户名"
               />
-              <div className={classes.line} />
+              <div className={classes.line}/>
+            </div>
+            <div className={classes.message}>
+              {this.state.message}
             </div>
           </div>
           <div className={classes.buttons}>
