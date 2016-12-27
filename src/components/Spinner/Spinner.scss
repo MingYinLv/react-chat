@@ -1,0 +1,55 @@
+@import "../../styles/_variables";
+
+$spinnerLargeSize: 64px !default;
+$spinnerDefaultSize: 48px !default;
+$spinnerSmallSize: 32px !default;
+$spinnerColor: $color-primary !default;
+
+.doubleBounce {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  &.sizeLarge {
+    width: $spinnerLargeSize;
+    height: $spinnerLargeSize;
+  }
+  &.sizeDefault {
+    width: $spinnerDefaultSize;
+    height: $spinnerDefaultSize;
+  }
+  &.sizeSmall {
+    width: $spinnerSmallSize;
+    height: $spinnerSmallSize;
+  }
+}
+
+.doubleBounce1, .doubleBounce2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: $spinnerColor;
+  opacity: 0.6;
+  animation: bounce 2.0s infinite ease-in-out;
+}
+
+.doubleBounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  }
+  50% {
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
+}

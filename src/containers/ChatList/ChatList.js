@@ -2,17 +2,18 @@
  * Created by MingYin Lv on 2016/10/23.
  */
 
-import React, {Component, PropTypes} from 'react';
-import {shouldComponentUpdate} from 'react-immutable-render-mixin';
-import {connect} from 'react-redux';
-import Dialog from '../../components/Dialog';
-import {switchChat} from '../../routes/Main/modules/main';
+import React, { Component, PropTypes } from 'react';
+import { shouldComponentUpdate } from 'react-immutable-render-mixin';
+import { connect } from 'react-redux';
+import { switchChat } from '../../routes/Main/modules/main';
 import classes from './ChatList.scss';
 import ChatItem from '../ChatItem';
 import Button from '../../components/Button';
+import AddChatModal from './AddChatModal';
 
 const propTypes = {
   chatList: PropTypes.object.isRequired,
+  chatName: PropTypes.string.isRequired,
 };
 
 class ChatList extends Component {
@@ -33,22 +34,22 @@ class ChatList extends Component {
   };
 
   showAddModal = () => {
-    this.setVisible(true);
+    this.refs.modal.show();
   };
 
   hideAddModal = () => {
-    this.setVisible(false);
+    this.refs.modal.hide();
   };
 
 
   render() {
 
-    const {chatList, chatId, switchChat} = this.props;
+    const { chatList, chatName, switchChat } = this.props;
 
     const chats = chatList.map(n => {
-      const active = n.get('id') === chatId;
+      const active = n.get('name') === chatName;
       return (
-        <ChatItem switchChat={switchChat} key={n.get('id')} active={active} data={n}/>
+        <ChatItem switchChat={switchChat} key={n.get('name')} active={active} data={n} />
       );
     });
     return (
@@ -57,16 +58,7 @@ class ChatList extends Component {
         <div className={classes.addChat}>
           <Button type="success" onClick={this.showAddModal}>新建聊天室</Button>
         </div>
-        <Dialog
-          title="添加聊天室"
-          height={400}
-          visible={this.state.visible}
-          onClose={this.hideAddModal}
-          animation="zoom"
-          maskAnimation="fade"
-        >
-          123
-        </Dialog>
+        <AddChatModal ref="modal" />
       </div>
     );
   }
@@ -76,7 +68,7 @@ ChatList.propTypes = propTypes;
 
 const mapStateToProps = (state) => ({
   chatList: state.getIn(['main', 'chatList']),
-  chatId: state.getIn(['main', 'chatId']),
+  chatName: state.getIn(['main', 'chatName']),
 });
 
 const mapDispatchToProps = {

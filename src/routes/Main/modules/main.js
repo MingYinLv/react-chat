@@ -8,6 +8,8 @@ export const LOAD_CHAT_LIST = 'LOAD_CHAT_LIST';   // 加载聊天室列表
 export const LOAD_MESSAGE_LIST = 'LOAD_MESSAGE_LIST';   // 加载消息列表
 export const SWITCH_CHAT = 'SWITCH_CHAT';  // 切换聊天室
 export const CHANGE_WINDOW = 'CHANGE_WINDOW';   // 修改窗口模式
+export const USER_JOIN = 'USER_JOIN';   // 用户加入聊天室
+export const USER_LEFT = 'USER_LEFT';   // 用户离开聊天室
 
 export function changeWindow(window = 'normal') {
   return {
@@ -16,10 +18,19 @@ export function changeWindow(window = 'normal') {
   }
 }
 
-export function initial() {
-  return (dispatch) => {
-
-  };
+export function initial({ chatMap }) {
+  const chatList = Object.keys(chatMap).map((n) => {
+    const chat = chatMap[n];
+    console.log(chat);
+    return {
+      name: n,
+      ...chat,
+    };
+  });
+  return {
+    type: INITIAL,
+    chatList,
+  }
 }
 
 export function loadChatList(data) {
@@ -36,16 +47,16 @@ export function loadMessageList() {
   };
 }
 
-export function switchChat(chatId) {
+export function switchChat(chatName) {
   return {
     type: SWITCH_CHAT,
-    chatId,
+    chatName,
   }
 }
 
 const ACTION_HANDLERS = {
-  [INITIAL]: (state) => {
-    return state;
+  [INITIAL]: (state, action) => {
+    return state.set('chatList', Immutable.fromJS(action.chatList));
   },
   [LOAD_CHAT_LIST]: (state, action) => {
     return state.set('chatList', action.data);
@@ -54,10 +65,20 @@ const ACTION_HANDLERS = {
     return state.set('messageList', action.data);
   },
   [SWITCH_CHAT]: (state, action) => {
-    return state.set('chatId', action.chatId);
+    return state.set('chatName', action.chatName);
   },
   [CHANGE_WINDOW]: (state, action) => {
     return state.set('window', action.window);
+  },
+  [USER_JOIN]: (state, action) => {
+    const { data } = action;
+    console.log(`${data.user.username}-${data.user.id}已加入${data.chatName}`);
+    return state;
+  },
+  [USER_LEFT]: (state, action) => {
+    const { data } = action;
+    console.log(`${data.user.username}-${data.user.id}离开了${data.chatName}`);
+    return state;
   },
 };
 
@@ -78,7 +99,7 @@ const initialState = Immutable.fromJS({
     icon: '/images/chat/3.png',
     noReadNum: 3,
   }],   // 聊天室列表
-  chatId: '1',  // 当前聊天室ID
+  chatName: '',  // 当前聊天室名称
   messageList: [],  // 消息列表
   window: 'normal',
 });

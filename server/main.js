@@ -57,5 +57,81 @@ if (config.env === 'development') {
   // server in production.
   app.use(serve(paths.dist()));
 }
+const userMap = {};
+const chatMap = {
+  '第一个聊天室': {
+    userNum: 0,
+    icon: '/images/chat/1.png',
+  }
+};
+var server = require('http').createServer(app.callback());
+var io = require('socket.io')(server);
+io.on('connection', function (socket) {
+  socket.emit('connected', {
+    chatMap,
+  });
+  socket.on('login', function (data) {
+    // 用户登录,根据id设置初始化信息
+    userMap[socket.id] = {
+      id: socket.id,
+      username: data.username,
+      currChat: '',
+    };
+    socket.emit('login success', userMap[socket.id]);
+  });
 
-export default app;
+  socket.on('user join', function ({ chatName }) {
+    // 用户进入聊天室,传入聊天室的名称,聊天室的名称是唯一的
+    // 获取聊天室对象
+    let chat = chatMap[chatName];
+    // 获取用户对象
+    const user = userMap[socket.id];
+    if (user.currChat) {
+      // 如果之前有加入聊天室,先离开
+      let prevChat = chatMap[user.currChat];
+      // 人数减1
+      prevChat.userNum = prevChat.userNum - 1;
+      socket.to(user.currChat).emit('user left');
+      // 离开
+      socket.leave(user.currChat);
+    }
+    // 当前聊天室人数+1
+    chat.userNum = chat.userNum + 1;
+    // 给当前聊天室的人发送加入信息
+    socket.to(chatName).emit('user join', {
+      chat,
+      user,
+    });
+    user.currChat = chatName;
+    // 当前socket加入到聊天室中
+    socket.join(chatName);
+    // 加入成功
+    socket.emit('join success', chat);
+  });
+
+  socket.on('create chat', function (data) {
+
+  });
+
+  socket.on('new message', function (data) {
+
+  });
+  socket.on('disconnect', function () {
+    // 如果之前有加入聊天室,先离开
+    const user = userMap[socket.id];
+    if (user && user.currChat) {
+      // 离开
+      let prevChat = chatMap[user.currChat];
+      // 人数减1
+      prevChat.userNum = prevChat.userNum - 1;
+      socket.to(user.currChat).emit('user left', {
+        user,
+        chat: prevChat,
+      });
+      socket.leave(user.currChat);
+    }
+    userMap[socket.id] = undefined;
+  });
+});
+
+export default server;

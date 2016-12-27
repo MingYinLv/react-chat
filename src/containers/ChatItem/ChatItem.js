@@ -16,10 +16,9 @@ const propTypes = {
 /**
  * @component ChatItem 聊天室
  * @prop data 聊天室数据
- * * @prop string id 聊天室id
  * * @prop string icon 聊天室图标
  * * @prop string name 聊天室名称
- * * @prop number noReadNum 未读消息数量
+ * * @prop number userNum 用户数量
  * @prop boolean active 当前聊天室是否选中
  * @prop function switchChat 切换聊天室
  */
@@ -32,7 +31,7 @@ class ChatItem extends Component {
 
   switchChat = () => {
     const {switchChat, data} = this.props;
-    switchChat(data.get('id'));
+    switchChat(data.get('name'));
   };
 
   render() {

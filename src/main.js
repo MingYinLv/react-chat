@@ -4,6 +4,7 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 import { useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import Immutable from 'immutable';
+import socket from './util/socket';
 import createStore from './store/createStore';
 import AppContainer from './containers/AppContainer';
 
@@ -27,6 +28,7 @@ const browserHistory = useRouterHistory(createBrowserHistory)({
 // const initialState = window.___INITIAL_STATE__
 const initialState = new Immutable.Map({});
 const store = createStore(initialState, browserHistory);
+socket(store);
 const history = syncHistoryWithStore(browserHistory, store, {
   /**
    * 手动修改 state 中路由状态的函数， (state) => state.router

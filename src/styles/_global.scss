@@ -11,6 +11,10 @@ html {
   box-sizing: border-box;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -40,26 +44,34 @@ a:focus {
   @include clearfix();
 }
 
-
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: rgba(97, 132, 71, .4);
-} /* 滚动条的滑轨背景颜色 */
+}
+
+/* 滚动条的滑轨背景颜色 */
 
 ::-webkit-scrollbar-thumb {
   background: rgba(97, 132, 71, .8);
-} /* 滑块颜色 */
+}
+
+/* 滑块颜色 */
 
 ::-webkit-scrollbar-button {
   background-color: #7c2929;
   display: none;
-} /* 滑轨两头的监听按钮颜色 */
+}
+
+/* 滑轨两头的监听按钮颜色 */
 
 ::-webkit-scrollbar-corner {
   background-color: rgba(97, 132, 71, .8);
-} /* 横向滚动条和纵向滚动条相交处尖角的颜色 */
+}
+
+/* 横向滚动条和纵向滚动条相交处尖角的颜色 */
 #root {
   height: 100%;
 }
