@@ -6,12 +6,14 @@ import {
   USER_JOIN,
   USER_LEFT,
   LOGIN_IN,
+  JOIN_SUCCESS,
+  NEW_MESSAGE,
   initial,
   showLoginLoading,
   loadMessageList,
 } from '../routes/Main/modules/main';
 
-const socket = io('http://localhost:3030');
+const socket = io('http://192.168.1.86:3030');
 
 export const obj = {
   socket
@@ -22,7 +24,10 @@ export default store => {
 }
 
 socket.on('connected', function (data) {
-  obj.store.dispatch(initial(data));
+  obj.store.dispatch(initial({
+    ...data,
+    userId: socket.id,
+  }));
   const username = localStorage.getItem('username');
   if (username) {
     obj.store.dispatch(showLoginLoading());
@@ -40,7 +45,10 @@ socket.on('login success', function (data) {
 });
 
 socket.on('join success', function (data) {
-  console.log('加入聊天室成功', data);
+  obj.store.dispatch({
+    type: JOIN_SUCCESS,
+    data,
+  });
 });
 
 socket.on('user join', function (data) {
@@ -60,4 +68,11 @@ socket.on('user left', function (data) {
 socket.on('messageList', function (data) {
   obj.store.dispatch(loadMessageList(data));
   console.log(data);
+});
+
+socket.on('new message', function (data) {
+  obj.store.dispatch({
+    type: NEW_MESSAGE,
+    data,
+  });
 });

@@ -6,8 +6,14 @@ import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import classes from './ChatInput.scss';
 import Button from '../../components/Button';
+import { obj } from '../../util/socket';
 
-const propTypes = {};
+const propTypes = {
+  username: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
+  chatName: PropTypes.string.isRequired,
+  newMessage: PropTypes.func.isRequired,
+};
 
 class ChatInput extends Component {
 
@@ -33,7 +39,28 @@ class ChatInput extends Component {
   };
 
   onSend = () => {
-
+    const { message } = this.state;
+    const { chatName, username, userId, newMessage } = this.props;
+    if (message && chatName && obj.socket) {
+      // 有消息内容,并且选中了聊天室,并且socket已链接
+      const msg = message.replace(/(\r)*\n/g, "<br/>").replace(/\s/g, "&nbsp;");
+      this.setState({
+        message: '',
+      });
+      const msgObj = {
+        username: username,
+        userId: userId,
+        message,
+        chatName,
+        type: 'message',
+        time: Date.now(),
+      };
+      newMessage(msgObj);
+      obj.socket.emit('new message', {
+        message: msg,
+        chatName,
+      });
+    }
   };
 
   onClear = () => {
@@ -43,8 +70,6 @@ class ChatInput extends Component {
   };
 
   render() {
-    const { message } = this.state;
-    const msg = message.replace(/(\r)*\n/g, "<br/>").replace(/\s/g, "&nbsp;");
     return (
       <div className={classes.container}>
         <textarea

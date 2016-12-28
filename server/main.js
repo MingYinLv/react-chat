@@ -67,9 +67,11 @@ const chatMap = {
 const messageMap = {
   '第一个聊天室': [{
     username: '吕铭印',
-    id: '123',
+    userId: '123',
+    chatName: '第一个聊天室',
     message: '第一条信息',
     type: 'message',
+    time: Date.now(),
   }],
 };
 var server = require('http').createServer(app.callback());
@@ -94,12 +96,14 @@ io.on('connection', function (socket) {
     let chat = chatMap[chatName];
     // 获取用户对象
     const user = userMap[socket.id];
-    if (user.currChat) {
+    if (user && user.currChat) {
       // 如果之前有加入聊天室,先离开
       let prevChat = chatMap[user.currChat];
       // 人数减1
       prevChat.userNum = prevChat.userNum - 1;
-      socket.to(user.currChat).emit('user left');
+      socket.to(user.currChat).emit('user left', {
+        chat, user,
+      });
       // 离开
       socket.leave(user.currChat);
     }
@@ -117,6 +121,7 @@ io.on('connection', function (socket) {
     socket.emit('join success', {
       chat,
       user,
+      chatName,
       messages: messageMap[chatName],
     });
   });
@@ -125,8 +130,21 @@ io.on('connection', function (socket) {
 
   });
 
-  socket.on('new message', function (data) {
-
+  socket.on('new message', function ({ chatName, message }) {
+    const user = userMap[socket.id];
+    const chatMsg = messageMap[chatName];
+    if (chatMap) {
+      const msg = {
+        username: user.username,
+        userId: socket.id,
+        message,
+        chatName,
+        type: 'message',
+        time: Date.now(),
+      };
+      chatMsg.push(msg);
+      socket.to(chatName).emit('new message', msg);
+    }
   });
 
   socket.on('loadChatInfo', function ({ chatName }) {
