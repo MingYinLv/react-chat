@@ -126,8 +126,20 @@ io.on('connection', function (socket) {
     });
   });
 
-  socket.on('create chat', function (data) {
-
+  socket.on('create chat', function ({ chatName, icon }) {
+    if (chatMap[chatName]) {
+      socket.emit('create failed', '创建失败,已存在同名的聊天室。');
+    } else {
+      chatMap[chatName] = {
+        userNum: 0,
+        icon,
+      };
+      messageMap[chatName] = [];
+      socket.emit('create success', {
+        name: chatName,
+        ...chatMap[chatName]
+      });
+    }
   });
 
   socket.on('new message', function ({ chatName, message }) {

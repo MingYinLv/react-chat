@@ -8,8 +8,13 @@ import Modal from 'boron/WaveModal';
 import classNames from 'classnames';
 import classes from './ChatList.scss';
 import Button from '../../components/Button';
+import { obj } from '../../util/socket';
 import LogoItem from './LogoItem';
-const propTypes = {};
+const propTypes = {
+  showAddChatLoading: PropTypes.func.isRequired,
+  setCreateFailedMessage: PropTypes.func.isRequired,
+  createFailedMessage: PropTypes.string.isRequired,
+};
 
 class AddChatModal extends Component {
   constructor(props) {
@@ -23,9 +28,25 @@ class AddChatModal extends Component {
   }
 
   onSubmit = () => {
-    this.setState({
-      message: '聊天室名称错误',
-    });
+    const { name, logo } = this.state;
+    const { showAddChatLoading, createFailedMessage } = this.props;
+    if (!name) {
+      this.setState({
+        message: '请输入聊天室名称',
+      });
+      return;
+    }
+
+    if (createFailedMessage) return;
+
+    if (obj && obj.socket) {
+      showAddChatLoading();
+      obj.socket.emit('create chat', {
+        chatName: name,
+        icon: `/images/chat/${logo}.png`,
+      });
+    }
+
   };
 
   onChange = (e) => {
@@ -36,11 +57,12 @@ class AddChatModal extends Component {
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.hide();
+      this.onSubmit();
     }
   };
 
   onFocus = () => {
+    this.props.setCreateFailedMessage('');
     this.setState({
       message: '',
     });
@@ -52,6 +74,7 @@ class AddChatModal extends Component {
 
   hide = () => {
     this.refs.modal.hide();
+    this.props.setCreateFailedMessage();
     this.setState({
       logo: 1,
       name: '',
@@ -66,6 +89,8 @@ class AddChatModal extends Component {
   };
 
   render() {
+
+    const { createFailedMessage } = this.props;
 
     const logos = [];
     for (let i = 1; i <= 10; i++) {
@@ -101,6 +126,9 @@ class AddChatModal extends Component {
                 placeholder="请输入聊天室名称"
               />
               <div className={classes.line} />
+            </div>
+            <div className={classes.message}>
+              {this.state.message || createFailedMessage}
             </div>
           </div>
           <div className={classes.buttons}>

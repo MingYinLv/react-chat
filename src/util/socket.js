@@ -8,6 +8,8 @@ import {
   LOGIN_IN,
   JOIN_SUCCESS,
   NEW_MESSAGE,
+  CREATE_CHAT_FAILED,
+  CREATE_CHAT_SUCCESS,
   initial,
   showLoginLoading,
   loadMessageList,
@@ -75,4 +77,18 @@ socket.on('new message', function (data) {
     type: NEW_MESSAGE,
     data,
   });
+});
+
+socket.on('create failed', function (message) {
+  obj.store.dispatch({
+    type: CREATE_CHAT_FAILED,
+    message,
+  });
+});
+
+socket.on('create success', function(data){
+  obj.store.dispatch({
+    type: CREATE_CHAT_SUCCESS,
+    data,
+  })
 });
