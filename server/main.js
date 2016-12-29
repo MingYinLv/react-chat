@@ -102,7 +102,7 @@ io.on('connection', function (socket) {
       // 人数减1
       prevChat.userNum = prevChat.userNum - 1;
       socket.to(user.currChat).emit('user left', {
-        chat, user,
+        chat: prevChat, user,
       });
       // 离开
       socket.leave(user.currChat);
@@ -136,6 +136,10 @@ io.on('connection', function (socket) {
       };
       messageMap[chatName] = [];
       socket.emit('create success', {
+        name: chatName,
+        ...chatMap[chatName]
+      });
+      socket.broadcast.emit('create success', {
         name: chatName,
         ...chatMap[chatName]
       });

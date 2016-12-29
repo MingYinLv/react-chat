@@ -14,6 +14,9 @@ const propTypes = {
   showAddChatLoading: PropTypes.func.isRequired,
   setCreateFailedMessage: PropTypes.func.isRequired,
   createFailedMessage: PropTypes.string.isRequired,
+  showAddChatModal: PropTypes.func.isRequired,
+  hideAddChatModal: PropTypes.func.isRequired,
+  addChatModal: PropTypes.bool.isRequired,
 };
 
 class AddChatModal extends Component {
@@ -25,6 +28,14 @@ class AddChatModal extends Component {
       name: '',
       message: '',
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.addChatModal) {
+      this.show();
+    } else {
+      this.hide();
+    }
   }
 
   onSubmit = () => {
@@ -74,7 +85,6 @@ class AddChatModal extends Component {
 
   hide = () => {
     this.refs.modal.hide();
-    this.props.setCreateFailedMessage();
     this.setState({
       logo: 1,
       name: '',
@@ -90,7 +100,7 @@ class AddChatModal extends Component {
 
   render() {
 
-    const { createFailedMessage } = this.props;
+    const { createFailedMessage, hideAddChatModal } = this.props;
 
     const logos = [];
     for (let i = 1; i <= 10; i++) {
@@ -102,6 +112,7 @@ class AddChatModal extends Component {
     return (
       <Modal
         ref="modal"
+        closeOnClick={false}
         contentStyle={{ background: 'rgba(255,255,255,.6)' }}
       >
         <div className={classes.modal}>
@@ -133,7 +144,7 @@ class AddChatModal extends Component {
           </div>
           <div className={classes.buttons}>
             <Button type="primary" onClick={this.onSubmit}>确定</Button>
-            <Button type="default" onClick={this.hide}>取消</Button>
+            <Button type="default" onClick={hideAddChatModal}>取消</Button>
           </div>
         </div>
       </Modal>

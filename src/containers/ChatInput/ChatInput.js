@@ -33,7 +33,7 @@ class ChatInput extends Component {
   };
 
   onKeyDown = (e) => {
-    if (e.ctrlKey && e.key === 'Enter') {
+    if ((e.ctrlKey || e.altKey) && e.key === 'Enter') {
       this.onSend();
     }
   };

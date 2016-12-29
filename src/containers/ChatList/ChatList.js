@@ -5,7 +5,9 @@
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import { connect } from 'react-redux';
-import { switchChat, showAddChatLoading, setCreateFailedMessage } from '../../routes/Main/modules/main';
+import { switchChat, showAddChatLoading, setCreateFailedMessage,
+  showAddChatModal, hideAddChatModal
+} from '../../routes/Main/modules/main';
 import classes from './ChatList.scss';
 import ChatItem from '../ChatItem';
 import Button from '../../components/Button';
@@ -18,7 +20,10 @@ const propTypes = {
   createFailedMessage: PropTypes.string.isRequired,
   showAddChatLoading: PropTypes.func.isRequired,
   addChatLoading: PropTypes.bool.isRequired,
+  addChatModal: PropTypes.bool.isRequired,
   setCreateFailedMessage: PropTypes.func.isRequired,
+  showAddChatModal: PropTypes.func.isRequired,
+  hideAddChatModal: PropTypes.func.isRequired,
 };
 
 class ChatList extends Component {
@@ -39,12 +44,12 @@ class ChatList extends Component {
   };
 
   showAddModal = () => {
-    this.refs.modal.show();
+    this.props.showAddChatModal();
   };
 
   hideAddModal = () => {
     this.props.setCreateFailedMessage();
-    this.refs.modal.hide();
+    this.props.hideAddChatModal();
   };
 
 
@@ -52,7 +57,8 @@ class ChatList extends Component {
 
     const {
       chatList, chatName, switchChat, createFailedMessage,
-      showAddChatLoading, setCreateFailedMessage, addChatLoading
+      showAddChatLoading, setCreateFailedMessage, addChatLoading,
+      showAddChatModal, hideAddChatModal, addChatModal
     } = this.props;
 
     const chats = chatList.map(n => {
@@ -79,6 +85,9 @@ class ChatList extends Component {
           ref="modal"
           createFailedMessage={createFailedMessage}
           showAddChatLoading={showAddChatLoading}
+          showAddChatModal={showAddChatModal}
+          hideAddChatModal={hideAddChatModal}
+          addChatModal={addChatModal}
         />
         {spinner}
       </div>
@@ -93,12 +102,15 @@ const mapStateToProps = (state) => ({
   chatName: state.getIn(['main', 'chatName']),
   createFailedMessage: state.getIn(['main', 'createFailedMessage']),
   addChatLoading: state.getIn(['main', 'addChatLoading']),
+  addChatModal: state.getIn(['main', 'addChatModal']),
 });
 
 const mapDispatchToProps = {
   switchChat,
   showAddChatLoading,
   setCreateFailedMessage,
+  showAddChatModal,
+  hideAddChatModal,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatList);

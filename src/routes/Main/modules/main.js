@@ -18,6 +18,20 @@ export const CREATE_CHAT_LOADING = 'CREATE_CHAT_LOADING';  // 添加聊天室动
 export const CREATE_CHAT_SUCCESS = 'CREATE_CHAT_SUCCESS';   // 添加聊天室成功
 export const CREATE_CHAT_FAILED = 'CREATE_FAILED';   // 添加聊天室
 export const SET_CREATE_FAILED_MESSAGE = 'SET_CREATE_FAILED_MESSAGE';
+export const SHOW_ADD_CHAT_MODAL = 'SHOW_ADD_CHAT_MODAL';
+export const HIDE_ADD_CHAT_MODAL = 'HIDE_ADD_CHAT_MODAL';
+
+export function showAddChatModal() {
+  return {
+    type: SHOW_ADD_CHAT_MODAL,
+  }
+}
+
+export function hideAddChatModal() {
+  return {
+    type: HIDE_ADD_CHAT_MODAL,
+  }
+}
 
 export function setCreateFailedMessage(message) {
   return {
@@ -156,7 +170,8 @@ const ACTION_HANDLERS = {
     const { data } = action;
     return state.set('chatList', state.get('chatList').push(Immutable.fromJS(data)))
       .set('addChatLoading', false)
-      .set('createFailedMessage', '');
+      .set('createFailedMessage', '')
+      .set('addChatModal', false);
   },
   [CREATE_CHAT_FAILED]: (state, action) => {
     return state.set('createFailedMessage', action.message)
@@ -164,6 +179,12 @@ const ACTION_HANDLERS = {
   },
   [SET_CREATE_FAILED_MESSAGE]: (state, action) => {
     return state.set('createFailedMessage', action.message || '');
+  },
+  [SHOW_ADD_CHAT_MODAL]: (state) => {
+    return state.set('addChatModal', true);
+  },
+  [HIDE_ADD_CHAT_MODAL]: (state) => {
+    return state.set('addChatModal', false);
   },
 };
 
@@ -177,6 +198,7 @@ const initialState = Immutable.fromJS({
   userId: '',
   loginLoading: false,
   addChatLoading: false,
+  addChatModal: false,
   currentChat: '', // 当前聊天室
   createFailedMessage: '',
 });

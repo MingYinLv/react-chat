@@ -63,6 +63,7 @@
   .name {
     .inputBox {
       position: relative;
+      height: 27px;
       &.error {
         .line {
           border-color: #ff4650;
@@ -89,6 +90,7 @@
     }
     input {
       border: none;
+      height: 27px;
       outline: none;
       background: transparent;
       width: 100%;
@@ -127,7 +129,7 @@
   }
 }
 
-.loading{
+.loading {
   z-index: 1200;
   background: rgba(0, 0, 0, .6);
   top: 0;
