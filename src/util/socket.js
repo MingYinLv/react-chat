@@ -13,6 +13,7 @@ import {
   initial,
   showLoginLoading,
   loadMessageList,
+  switchChat,
 } from '../routes/Main/modules/main';
 
 const socket = io('http://192.168.1.86:3030');
@@ -44,6 +45,14 @@ socket.on('login success', function (data) {
     type: LOGIN_IN,
     data,
   });
+  const chatList = obj.store.getState().getIn(['main', 'chatList']);
+  if (chatList && chatList.size > 0) {
+    const chat = chatList.get(0);
+    obj.store.dispatch(switchChat(chat.get('name')));
+    socket.emit('user join', {
+      chatName: chat.get('name'),
+    });
+  }
 });
 
 socket.on('join success', function (data) {
@@ -86,7 +95,7 @@ socket.on('create failed', function (message) {
   });
 });
 
-socket.on('create success', function(data){
+socket.on('create success', function (data) {
   obj.store.dispatch({
     type: CREATE_CHAT_SUCCESS,
     data,
