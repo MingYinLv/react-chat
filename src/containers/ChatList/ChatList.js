@@ -5,7 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import { connect } from 'react-redux';
-import { switchChat, showAddChatLoading, setCreateFailedMessage,
+import {
+  switchChat, showAddChatLoading, setCreateFailedMessage,
   showAddChatModal, hideAddChatModal
 } from '../../routes/Main/modules/main';
 import classes from './ChatList.scss';
@@ -17,6 +18,7 @@ import Spinner from '../../components/Spinner';
 const propTypes = {
   chatList: PropTypes.object.isRequired,
   chatName: PropTypes.string.isRequired,
+  filter: PropTypes.string.isRequired,
   createFailedMessage: PropTypes.string.isRequired,
   showAddChatLoading: PropTypes.func.isRequired,
   addChatLoading: PropTypes.bool.isRequired,
@@ -58,14 +60,15 @@ class ChatList extends Component {
     const {
       chatList, chatName, switchChat, createFailedMessage,
       showAddChatLoading, setCreateFailedMessage, addChatLoading,
-      showAddChatModal, hideAddChatModal, addChatModal
+      showAddChatModal, hideAddChatModal, addChatModal, filter,
     } = this.props;
 
-    const chats = chatList.map(n => {
-      const active = n.get('name') === chatName;
-      return (
-        <ChatItem switchChat={switchChat} key={n.get('name')} active={active} data={n} />
-      );
+    const chats = [];
+    chatList.forEach(n => {
+      if (n.get('name').includes(filter)) {
+        const active = n.get('name') === chatName;
+        chats.push(<ChatItem switchChat={switchChat} key={n.get('name')} active={active} data={n} />);
+      }
     });
 
     const spinner = addChatLoading ? (

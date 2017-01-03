@@ -1,0 +1,26 @@
+
+.header {
+  height: 50px;
+  padding: 0 15px;
+  background: rgba(97, 132, 71, .4);
+  color: #fff;
+  position: relative;
+}
+
+.toolBtn {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  line-height: 50px;
+}
+
+.windowIcon {
+  cursor: pointer;
+}
+
+.filterBox {
+  width: 170px;
+  position: absolute;
+  left: 15px;
+  top: 15px;
+}

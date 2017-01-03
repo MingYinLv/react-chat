@@ -60,59 +60,6 @@
     display: block;
   }
 
-  .name {
-    .inputBox {
-      position: relative;
-      height: 27px;
-      &.error {
-        .line {
-          border-color: #ff4650;
-          width: 100%;
-          left: 0;
-        }
-        input {
-          &::-webkit-input-placeholder {
-            color: #ff4650;
-          }
-          &::-moz-placeholder {
-            color: #ff4650;
-          }
-        }
-      }
-    }
-    .line {
-      border-bottom: 1px solid $color-primary;
-      position: absolute;
-      width: 0;
-      bottom: 0;
-      transition: all 300ms;
-      left: 50%;
-    }
-    input {
-      border: none;
-      height: 27px;
-      outline: none;
-      background: transparent;
-      width: 100%;
-      padding: 0 10px 10px;
-      border-bottom: 1px solid #e2e2e2;
-      font-size: 14px;
-      color: #fff;
-      &::-webkit-input-placeholder {
-        transition: color 300ms;
-        color: #ddd;
-      }
-      &::-moz-placeholder {
-        transition: color 300ms;
-        color: #ddd;
-      }
-      &:focus + .line {
-        width: 100%;
-        left: 0;
-      }
-    }
-  }
-
   .message {
     line-height: 30px;
     font-size: 13px;
@@ -138,3 +85,55 @@
   bottom: 0;
   position: fixed;
 }
+
+.inputBox {
+  position: relative;
+  height: 27px;
+  .line {
+    border-bottom: 1px solid $color-primary;
+    position: absolute;
+    width: 0;
+    bottom: 0;
+    transition: all 300ms;
+    left: 50%;
+  }
+  input {
+    border: none;
+    height: 27px;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    padding: 0 10px 10px;
+    border-bottom: 1px solid #e2e2e2;
+    font-size: 14px;
+    color: #fff;
+    &::-webkit-input-placeholder {
+      transition: color 300ms;
+      color: #ddd;
+    }
+    &::-moz-placeholder {
+      transition: color 300ms;
+      color: #ddd;
+    }
+    &:focus + .line {
+      width: 100%;
+      left: 0;
+    }
+  }
+  &.error {
+    .line {
+      border-color: #ff4650;
+      width: 100%;
+      left: 0;
+    }
+    input {
+      &::-webkit-input-placeholder {
+        color: #ff4650;
+      }
+      &::-moz-placeholder {
+        color: #ff4650;
+      }
+    }
+  }
+}
+
