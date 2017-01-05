@@ -2,6 +2,7 @@
  * Created by Administrator on 2016/10/18.
  */
 import Immutable from 'immutable';
+import getSocket from '../../../util/getSocket';
 
 export const INITIAL = 'INITIAL';  // 初始化
 export const LOAD_CHAT_LIST = 'LOAD_CHAT_LIST';   // 加载聊天室列表
@@ -80,6 +81,14 @@ export function initial({ chatMap, userId, }) {
     chatList,
     userId,
   }
+}
+
+export function loginIn(username) {
+  return getSocket((dispatch, getState, socket) => {
+    socket.emit('login', {
+      username: this.state.name,
+    });
+  });
 }
 
 export function loadChatList(data) {

@@ -2,13 +2,17 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import thunk from 'redux-thunk';
 import Immutable from 'immutable';
+import socket from '../util/redux-socket';
+import config from '../../config';
 import { makeRootReducer } from './reducers';
 
 export default (initialState = Immutable.fromJS({}), history) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [thunk, routerMiddleware(history)];
+  const middleware = [socket(`http://${config.server_host}
+${config.server_port === '80' ? '' : config.server_port}`),
+    thunk, routerMiddleware(history)];
 
   // ======================================================
   // Store Enhancers
