@@ -9,7 +9,6 @@ import webpackConfig from '../build/webpack.config';
 import config from '../config';
 import webpackDevMiddleware from './middleware/webpack-dev';
 import webpackHMRMiddleware from './middleware/webpack-hmr';
-
 const debug = _debug('app:server');
 const paths = config.utils_paths;
 const app = new Koa();
@@ -87,7 +86,10 @@ io.on('connection', function (socket) {
       username: data.username,
       currChat: '',
     };
-    socket.emit('login success', userMap[socket.id]);
+    socket.emit('action', {
+      type: 'LOGIN_IN',
+      user: userMap[socket.id],
+    });
   });
 
   socket.on('user join', function ({ chatName }) {
@@ -101,8 +103,11 @@ io.on('connection', function (socket) {
       let prevChat = chatMap[user.currChat];
       // 人数减1
       prevChat.userNum = prevChat.userNum - 1;
-      socket.to(user.currChat).emit('user left', {
-        chat: prevChat, user,
+      socket.to(user.currChat).emit('action', {
+        type: 'USER_LEFT',
+        data: {
+          chat: prevChat, user,
+        },
       });
       // 离开
       socket.leave(user.currChat);
@@ -110,38 +115,53 @@ io.on('connection', function (socket) {
     // 当前聊天室人数+1
     chat.userNum = chat.userNum + 1;
     // 给当前聊天室的人发送加入信息
-    socket.to(chatName).emit('user join', {
-      chat,
-      user,
+    socket.to(chatName).emit('action', {
+      type: 'USER_JOIN',
+      data: {
+        chat,
+        user,
+      },
     });
     user.currChat = chatName;
     // 当前socket加入到聊天室中
     socket.join(chatName);
     // 加入成功
-    socket.emit('join success', {
-      chat,
-      user,
-      chatName,
-      messages: messageMap[chatName],
+    socket.emit('action', {
+      type: 'JOIN_SUCCESS',
+      data: {
+        chat,
+        user,
+        chatName,
+        messages: messageMap[chatName],
+      },
     });
   });
 
   socket.on('create chat', function ({ chatName, icon }) {
     if (chatMap[chatName]) {
-      socket.emit('create failed', '创建失败,已存在同名的聊天室。');
+      socket.emit('action', {
+        type: 'CREATE_CHAT_FAILED',
+        message: '创建失败,已存在同名的聊天室。',
+      });
     } else {
       chatMap[chatName] = {
         userNum: 0,
         icon,
       };
       messageMap[chatName] = [];
-      socket.emit('create success', {
-        name: chatName,
-        ...chatMap[chatName]
+      socket.emit('action', {
+        type: 'CREATE_CHAT_SUCCESS',
+        data: {
+          name: chatName,
+          ...chatMap[chatName]
+        },
       });
-      socket.broadcast.emit('create success', {
-        name: chatName,
-        ...chatMap[chatName]
+      socket.broadcast.emit('action', {
+        type: 'CREATE_CHAT_SUCCESS',
+        data: {
+          name: chatName,
+          ...chatMap[chatName]
+        },
       });
     }
   });
@@ -159,7 +179,10 @@ io.on('connection', function (socket) {
         time: Date.now(),
       };
       chatMsg.push(msg);
-      socket.to(chatName).emit('new message', msg);
+      socket.to(chatName).emit('action', {
+        type: 'NEW_MESSAGE',
+        data: msg,
+      });
     }
   });
 

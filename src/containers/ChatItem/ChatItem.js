@@ -6,12 +6,12 @@ import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import className from 'classnames';
 import classes from './ChatItem.scss';
-import { obj } from '../../util/socket';
 
 const propTypes = {
   data: PropTypes.object.isRequired,
   active: PropTypes.bool.isRequired,
   switchChat: PropTypes.func.isRequired,
+  userJoin: PropTypes.func.isRequired,
 };
 
 /**
@@ -31,14 +31,9 @@ class ChatItem extends Component {
   }
 
   switchChat = () => {
-    const { switchChat, data } = this.props;
+    const { switchChat, data, userJoin } = this.props;
     switchChat(data.get('name'));
-    const { socket } = obj;
-    if (socket) {
-      socket.emit('user join', {
-        chatName: data.get('name'),
-      });
-    }
+    userJoin(data.get('name'));
   };
 
   render() {
@@ -50,7 +45,7 @@ class ChatItem extends Component {
 
     return (
       <div className={chatCls} onClick={this.switchChat}>
-        <img src={data.get('icon')} alt={data.get('name')} className={classes.photo}/>
+        <img src={data.get('icon')} alt={data.get('name')} className={classes.photo} />
         {data.get('name')}
         {/*<div className={classes.badge}>{data.get('userNum')}</div>*/}
       </div>

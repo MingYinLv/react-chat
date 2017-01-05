@@ -6,11 +6,11 @@ import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import Modal from 'boron/WaveModal';
 import classNames from 'classnames';
-import { obj } from '../../util/socket';
 import classes from '../ChatList/ChatList.scss';
 import Button from '../../components/Button';
 const propTypes = {
   showLoginLoading: PropTypes.func.isRequired,
+  loginIn: PropTypes.func.isRequired,
 };
 
 class LoginModal extends Component {
@@ -24,7 +24,7 @@ class LoginModal extends Component {
   }
 
   onSubmit = () => {
-    const { socket }=obj;
+    const { loginIn, showLoginLoading } = this.props;
     const { name } = this.state;
     if (!name) {
       this.setState({
@@ -32,12 +32,8 @@ class LoginModal extends Component {
       });
       return;
     }
-    if (socket) {
-      this.props.showLoginLoading();
-      socket.emit('login', {
-        username: this.state.name,
-      });
-    }
+    showLoginLoading();
+    loginIn(this.state.name);
   };
 
   onChange = (e) => {
@@ -100,7 +96,7 @@ class LoginModal extends Component {
                 onChange={this.onChange}
                 placeholder="请输入您的用户名"
               />
-              <div className={classes.line}/>
+              <div className={classes.line} />
             </div>
             <div className={classes.message}>
               {this.state.message}

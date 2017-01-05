@@ -6,7 +6,6 @@ import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import classes from './ChatInput.scss';
 import Button from '../../components/Button';
-import { obj } from '../../util/socket';
 
 const propTypes = {
   username: PropTypes.string.isRequired,
@@ -41,7 +40,7 @@ class ChatInput extends Component {
   onSend = () => {
     const { message } = this.state;
     const { chatName, username, userId, newMessage } = this.props;
-    if (message && chatName && obj.socket) {
+    if (message && chatName) {
       // 有消息内容,并且选中了聊天室,并且socket已链接
       const msg = message.replace(/(\r)*\n/g, "<br/>").replace(/\s/g, "&nbsp;");
       this.setState({
@@ -50,16 +49,12 @@ class ChatInput extends Component {
       const msgObj = {
         username: username,
         userId: userId,
-        message,
+        message: msg,
         chatName,
         type: 'message',
         time: Date.now(),
       };
       newMessage(msgObj);
-      obj.socket.emit('new message', {
-        message: msg,
-        chatName,
-      });
     }
   };
 

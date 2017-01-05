@@ -7,7 +7,7 @@ import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import { connect } from 'react-redux';
 import {
   switchChat, showAddChatLoading, setCreateFailedMessage,
-  showAddChatModal, hideAddChatModal
+  showAddChatModal, hideAddChatModal, userJoin, createChat
 } from '../../routes/Main/modules/main';
 import classes from './ChatList.scss';
 import ChatItem from '../ChatItem';
@@ -26,6 +26,8 @@ const propTypes = {
   setCreateFailedMessage: PropTypes.func.isRequired,
   showAddChatModal: PropTypes.func.isRequired,
   hideAddChatModal: PropTypes.func.isRequired,
+  userJoin: PropTypes.func.isRequired,
+  createChat: PropTypes.func.isRequired,
 };
 
 class ChatList extends Component {
@@ -60,14 +62,22 @@ class ChatList extends Component {
     const {
       chatList, chatName, switchChat, createFailedMessage,
       showAddChatLoading, setCreateFailedMessage, addChatLoading,
-      showAddChatModal, hideAddChatModal, addChatModal, filter,
+      showAddChatModal, hideAddChatModal, addChatModal, filter, userJoin, createChat
     } = this.props;
 
     const chats = [];
     chatList.forEach(n => {
       if (n.get('name').includes(filter)) {
         const active = n.get('name') === chatName;
-        chats.push(<ChatItem switchChat={switchChat} key={n.get('name')} active={active} data={n} />);
+        chats.push(
+          <ChatItem
+            switchChat={switchChat}
+            key={n.get('name')}
+            active={active}
+            data={n}
+            userJoin={userJoin}
+          />
+        );
       }
     });
 
@@ -91,6 +101,7 @@ class ChatList extends Component {
           showAddChatModal={showAddChatModal}
           hideAddChatModal={hideAddChatModal}
           addChatModal={addChatModal}
+          createChat={createChat}
         />
         {spinner}
       </div>
@@ -114,6 +125,8 @@ const mapDispatchToProps = {
   setCreateFailedMessage,
   showAddChatModal,
   hideAddChatModal,
+  userJoin,
+  createChat,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatList);

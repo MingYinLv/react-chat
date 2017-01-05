@@ -3,9 +3,8 @@
  */
 
 import { SocketIdentify } from './getSocket';
-
+import { initial, showLoginLoading, switchChat } from '../routes/Main/modules/main';
 // socket 连接成功后触发的action
-export const SOCKET_CONNECTED = 'SOCKET_CONNECTED';
 
 // socket 对象
 let socket = null;
@@ -22,16 +21,34 @@ export default (socketServer) => {
   return ({ dispatch, getState }) => {
     console.log('redux socket');
     socket.on('connected', (data) => {
-      // socket连接成功后,执行触发SOCKET_CONNECTED
-      dispatch({
-        type: SOCKET_CONNECTED,
-        data,
-      });
+      // socket连接成功后,initial
+      dispatch(initial({
+        ...data,
+        userId: socket.id,
+      }));
+      const username = localStorage.getItem('username');
+      if (username) {
+        dispatch(showLoginLoading());
+        socket.emit('login', {
+          username,
+        });
+      }
     });
 
     socket.on('action', (action) => {
       // 接收action
       dispatch(action);
+      if (action.type === 'LOGIN_IN') {
+        // 如果是登录成功,执行其他操作
+        const chatList = getState().getIn(['main', 'chatList']);
+        if (chatList && chatList.size > 0) {
+          const chat = chatList.get(0);
+          dispatch(switchChat(chat.get('name')));
+          socket.emit('user join', {
+            chatName: chat.get('name'),
+          });
+        }
+      }
     });
 
     return next => action => {

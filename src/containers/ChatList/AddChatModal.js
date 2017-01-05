@@ -8,7 +8,6 @@ import Modal from 'boron/WaveModal';
 import classNames from 'classnames';
 import classes from './ChatList.scss';
 import Button from '../../components/Button';
-import { obj } from '../../util/socket';
 import LogoItem from './LogoItem';
 const propTypes = {
   showAddChatLoading: PropTypes.func.isRequired,
@@ -16,6 +15,7 @@ const propTypes = {
   createFailedMessage: PropTypes.string.isRequired,
   showAddChatModal: PropTypes.func.isRequired,
   hideAddChatModal: PropTypes.func.isRequired,
+  createChat: PropTypes.func.isRequired,
   addChatModal: PropTypes.bool.isRequired,
 };
 
@@ -40,7 +40,7 @@ class AddChatModal extends Component {
 
   onSubmit = () => {
     const { name, logo } = this.state;
-    const { showAddChatLoading, createFailedMessage } = this.props;
+    const { showAddChatLoading, createFailedMessage, createChat } = this.props;
     if (!name) {
       this.setState({
         message: '请输入聊天室名称',
@@ -49,15 +49,11 @@ class AddChatModal extends Component {
     }
 
     if (createFailedMessage) return;
-
-    if (obj && obj.socket) {
-      showAddChatLoading();
-      obj.socket.emit('create chat', {
-        chatName: name,
-        icon: `/images/chat/${logo}.png`,
-      });
-    }
-
+    showAddChatLoading();
+    createChat({
+      chatName: name,
+      icon: `/images/chat/${logo}.png`,
+    });
   };
 
   onChange = (e) => {

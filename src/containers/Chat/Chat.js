@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import classNames from 'classnames';
 import Spinner from '../../components/Spinner';
-import { changeWindow, showLoginLoading } from '../../routes/Main/modules/main';
+import { changeWindow, showLoginLoading, loginIn } from '../../routes/Main/modules/main';
 import classes from './Chat.scss';
 import ChatList from '../ChatList';
 import ChatContent from '../ChatContent';
@@ -17,6 +17,7 @@ import ChatHeader from '../ChatHeader';
 const propTypes = {
   showLoginLoading: PropTypes.func.isRequired,
   changeWindow: PropTypes.func.isRequired,
+  loginIn: PropTypes.func.isRequired,
   window: PropTypes.string.isRequired,
 };
 
@@ -54,7 +55,7 @@ class Chat extends Component {
 
   render() {
 
-    const { window, loginLoading, showLoginLoading, changeWindow } = this.props;
+    const { window, loginLoading, showLoginLoading, changeWindow, loginIn } = this.props;
 
     const spinner = loginLoading ? (
       <div className={classes.loading}>
@@ -67,7 +68,7 @@ class Chat extends Component {
         [classes.max]: window === 'max'
       })}>
         {spinner}
-        <LoginModal ref="modal" showLoginLoading={showLoginLoading} />
+        <LoginModal ref="modal" showLoginLoading={showLoginLoading} loginIn={loginIn} />
         <ChatHeader
           onChange={this.onFilterChange}
           value={this.state.filter}
@@ -96,6 +97,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   changeWindow,
   showLoginLoading,
+  loginIn,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

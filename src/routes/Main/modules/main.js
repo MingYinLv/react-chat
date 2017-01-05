@@ -22,6 +22,21 @@ export const SET_CREATE_FAILED_MESSAGE = 'SET_CREATE_FAILED_MESSAGE';
 export const SHOW_ADD_CHAT_MODAL = 'SHOW_ADD_CHAT_MODAL';
 export const HIDE_ADD_CHAT_MODAL = 'HIDE_ADD_CHAT_MODAL';
 
+
+export function createChat(data) {
+  return getSocket((dispatch, getState, socket) => {
+    socket.emit('create chat', data);
+  });
+}
+
+export function userJoin(chatName) {
+  return getSocket((dispatch, getState, socket) => {
+    socket.emit('user join', {
+      chatName,
+    });
+  });
+}
+
 export function showAddChatModal() {
   return {
     type: SHOW_ADD_CHAT_MODAL,
@@ -42,10 +57,16 @@ export function setCreateFailedMessage(message) {
 }
 
 export function newMessage(data) {
-  return {
-    type: NEW_MESSAGE,
-    data,
-  }
+  return getSocket((dispatch, getState, socket) => {
+    dispatch({
+      type: NEW_MESSAGE,
+      data,
+    });
+    socket.emit('new message', {
+      message: data.message,
+      chatName: data.chatName,
+    });
+  });
 }
 
 export function changeWindow(window = 'normal') {
@@ -86,8 +107,16 @@ export function initial({ chatMap, userId, }) {
 export function loginIn(username) {
   return getSocket((dispatch, getState, socket) => {
     socket.emit('login', {
-      username: this.state.name,
+      username,
     });
+    const chatList = getState().getIn(['main', 'chatList']);
+    if (chatList && chatList.size > 0) {
+      const chat = chatList.get(0);
+      dispatch(switchChat(chat.get('name')));
+      socket.emit('user join', {
+        chatName: chat.get('name'),
+      });
+    }
   });
 }
 
@@ -150,8 +179,9 @@ const ACTION_HANDLERS = {
     return state.set('loginLoading', true);
   },
   [LOGIN_IN]: (state, action) => {
-    const { data } = action;
-    return state.set('username', data.username).set('loginLoading', false);
+    const { user } = action;
+    localStorage.setItem('username', user.username);
+    return state.set('username', user.username).set('loginLoading', false);
   },
   [JOIN_SUCCESS]: (state, action) => {
     const { chat, messages, chatName, } = action.data;
