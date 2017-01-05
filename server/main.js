@@ -7,6 +7,7 @@ import proxy from 'koa-proxy';
 import _debug from 'debug';
 import webpackConfig from '../build/webpack.config';
 import config from '../config';
+import { Message } from '../src/util/Enum';
 import webpackDevMiddleware from './middleware/webpack-dev';
 import webpackHMRMiddleware from './middleware/webpack-hmr';
 const debug = _debug('app:server');
@@ -69,7 +70,7 @@ const messageMap = {
     userId: '123',
     chatName: '第一个聊天室',
     message: '第一条信息',
-    type: 'message',
+    type: Message.NORMAL,
     time: Date.now(),
   }],
 };
@@ -175,7 +176,7 @@ io.on('connection', function (socket) {
         userId: socket.id,
         message,
         chatName,
-        type: 'message',
+        type: Message.NORMAL,
         time: Date.now(),
       };
       chatMsg.push(msg);

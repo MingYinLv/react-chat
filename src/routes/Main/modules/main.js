@@ -3,14 +3,15 @@
  */
 import Immutable from 'immutable';
 import getSocket from '../../../util/getSocket';
+import { Message } from '../../../util/Enum';
 
 export const INITIAL = 'INITIAL';  // 初始化
 export const LOAD_CHAT_LIST = 'LOAD_CHAT_LIST';   // 加载聊天室列表
 export const LOAD_MESSAGE_LIST = 'LOAD_MESSAGE_LIST';   // 加载消息列表
 export const SWITCH_CHAT = 'SWITCH_CHAT';  // 切换聊天室
 export const CHANGE_WINDOW = 'CHANGE_WINDOW';   // 修改窗口模式
-export const USER_JOIN = 'USER_JOIN';   // 用户加入聊天室
-export const USER_LEFT = 'USER_LEFT';   // 用户离开聊天室
+export const USER_JOIN = 'USER_JOIN';   // 其他用户加入聊天室
+export const USER_LEFT = 'USER_LEFT';   // 其他用户离开聊天室
 export const LOGIN_LOADING = 'LOGIN_LOADING';  // 登录动画
 export const LOGIN_IN = 'LOGIN_IN';   // 登录
 export const JOIN_SUCCESS = 'JOIN_SUCCESS';  // 加入聊天室成功
@@ -168,12 +169,22 @@ const ACTION_HANDLERS = {
     return state.set('chat', stateChat);
   },
   [USER_LEFT]: (state, action) => {
-    const { data: { chat } } = action;
+    const { data: { chat, user } } = action;
     let stateChat = state.get('chat');
     if (chat) {
       stateChat = stateChat.set('userNum', chat.userNum);
     }
-    return state.set('chat', stateChat);
+    let messageList = state.get('messageList');
+    if (user && chat) {
+      messageList = messageList.push(Immutable.fromJS({
+        username: user.username,
+        userId: user.userId,
+        chatName: chat.chatName,
+        type: Message.USER_LEFT,
+        time: Date.now(),
+      }));
+    }
+    return state.set('chat', stateChat).set('messageList', messageList);
   },
   [LOGIN_LOADING]: (state) => {
     return state.set('loginLoading', true);

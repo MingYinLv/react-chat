@@ -9,7 +9,7 @@ export default (initialState = Immutable.fromJS({}), history) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [socket('http://192.168.1.86:3030'),
+  const middleware = [socket('localhost:3030'),
     thunk, routerMiddleware(history)];
 
   // ======================================================
