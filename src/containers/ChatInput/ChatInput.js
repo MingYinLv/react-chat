@@ -5,6 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-immutable-render-mixin';
 import classes from './ChatInput.scss';
+import { Message } from '../../util/Enum';
 import Button from '../../components/Button';
 
 const propTypes = {
@@ -51,7 +52,7 @@ class ChatInput extends Component {
         userId: userId,
         message: msg,
         chatName,
-        type: 'message',
+        type: Message.NORMAL,
         time: Date.now(),
       };
       newMessage(msgObj);
