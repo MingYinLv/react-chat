@@ -33,6 +33,10 @@ class ChatHeader extends Component {
     changeWindow(window === 'normal' ? 'max' : 'normal');
   };
 
+  openGithub = () => {
+    window.open('https://github.com/MingYinLv/react-chat');
+  };
+
   render() {
 
     const { window } = this.props;
@@ -56,7 +60,12 @@ class ChatHeader extends Component {
           <Icon
             onClick={this.changeWindow}
             id={window === 'max' ? 'shrink' : 'enlarge'}
-            className={classes.windowIcon}
+            className={classes.icon}
+          />
+          <Icon
+            onClick={this.openGithub}
+            id="github"
+            className={classes.icon}
           />
         </div>
       </div>
