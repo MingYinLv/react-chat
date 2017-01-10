@@ -5,3 +5,5 @@
 npm install
 
 npm start
+
+[Demo](http://chat.lvmingyin.com)
